@@ -4,7 +4,9 @@ const pool = require('../db');
 const bcrypt = require('bcrypt');
 const jwtGenerator = require('../utils/jwtGenerator');
 
-router.post("/register", async (req, res) => {
+// Registration
+
+router.post('/register', async (req, res) => {
 
     try {
          // Take apart req.body (name, email, pass)
@@ -43,4 +45,21 @@ router.post("/register", async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+// Login
+router.post('/login', async (req, res) => {
+    try {
+        // req.body
+
+        // error if no such user
+
+        // password = db password?
+
+        // provide token
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 module.exports = router;
