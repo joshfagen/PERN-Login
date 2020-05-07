@@ -49,11 +49,27 @@ router.post('/register', async (req, res) => {
 // Login
 router.post('/login', async (req, res) => {
     try {
+        
         // req.body
-
+        const { name, password } = req.body;
+        
         // error if no such user
+        const user = await pool.query("SELECT * FROM users WHERE user_name = $1", [
+            name 
+        ]);
+
+        if(user.rows.length === 0) {
+            return res.status(401).json("Password or Username is incorrect, please reenter.");
+        }
 
         // password = db password?
+
+        const passwordValid = await bcrypt.compare(password, user.rows[0].user_password);
+        
+        if(!passwordValid) {
+            return res.status(401).json("Password or Email is Incorrect.");
+        }
+
 
         // provide token
     } catch (err) {
