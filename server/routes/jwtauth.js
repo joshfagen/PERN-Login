@@ -3,10 +3,11 @@ const router = express.Router();
 const pool = require('../db');   
 const bcrypt = require('bcrypt');
 const jwtGenerator = require('../utils/jwtGenerator');
+const validInfo = require('../middleware/validInfo');
 
 // Registration
 
-router.post('/register', async (req, res) => {
+router.post('/register', validInfo, async (req, res) => {
 
     try {
          // Take apart req.body (name, email, pass)
@@ -47,15 +48,15 @@ router.post('/register', async (req, res) => {
 });
 
 // Login
-router.post('/login', async (req, res) => {
+router.post('/login', validInfo, async (req, res) => {
     try {
         
         // req.body
-        const { name, password } = req.body;
+        const { email, password } = req.body;
         
         // error if no such user
-        const user = await pool.query("SELECT * FROM users WHERE user_name = $1", [
-            name 
+        const user = await pool.query("SELECT * FROM users WHERE email = $1", [
+            email
         ]);
 
         if(user.rows.length === 0) {

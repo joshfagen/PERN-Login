@@ -9,7 +9,7 @@ app.use(cors());
 //Routes
 
 // register and login routes
-app.use("/authentication", require("./routes/jwtAuth.js"));
+app.use("/auth", require("./routes/jwtAuth.js"));
 
 app.use('/hello', () => {
     console.log('test!!!');
