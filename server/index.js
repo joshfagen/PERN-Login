@@ -11,9 +11,8 @@ app.use(cors());
 // register and login routes
 app.use("/auth", require("./routes/jwtAuth.js"));
 
-app.use('/hello', () => {
-    console.log('test!!!');
-})
+app.use('/dashboard', require("./routes/dashboard"));
+
 let port = process.env.port || 5000;
 app.listen(port, () => {
     console.log('server currently running on port ' + port);

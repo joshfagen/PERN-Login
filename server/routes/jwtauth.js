@@ -4,7 +4,7 @@ const pool = require('../db');
 const bcrypt = require('bcrypt');
 const jwtGenerator = require('../utils/jwtGenerator');
 const validInfo = require('../middleware/validInfo');
-
+const authorization = require('../middleware/authorization');
 // Registration
 
 router.post('/register', validInfo, async (req, res) => {
@@ -55,7 +55,7 @@ router.post('/login', validInfo, async (req, res) => {
         const { email, password } = req.body;
         
         // error if no such user
-        const user = await pool.query("SELECT * FROM users WHERE email = $1", [
+        const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [
             email
         ]);
 
@@ -82,5 +82,16 @@ router.post('/login', validInfo, async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+    router.post("/verified", authorization, (req, res) => {
+        try {
+            res.json(true);
+
+        } catch (err) {
+            
+            console.log(err.message);
+            res.status(500).send('Server Error');     
+        }
+    });
 
 module.exports = router;
