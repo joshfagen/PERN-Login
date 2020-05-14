@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, { Fragment, useState } from 'react';
 import './App.css';
 
 import {
@@ -15,6 +15,13 @@ import {
  import Register from './components/Register';
 
 function App() {
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const setAuth = boolean => {
+    setIsAuthenticated(boolean);
+  };
+
   return (
     <Fragment>
       <Router>
@@ -23,17 +30,35 @@ function App() {
             <Route 
               exact 
               path="/login" 
-              render={props => <Login {...props} />} 
+              render={props => 
+                !isAuthenticated ? (
+                <Login {...props} setAuth={setAuth}/>
+                ) : (
+                <Redirect to="/dashboard" />
+                )
+              } 
             />
             <Route 
               exact 
               path="/register" 
-              render={props => <Register {...props} />}
+              render={props => 
+                !isAuthenticated ? (
+                <Register {...props} setAuth={setAuth}/>
+              ) : (
+                <Redirect to="/login" />
+              )
+            }
             />
             <Route 
               exact 
               path="/dashboard" 
-              render={props => <Dashboard {...props} />}
+              render={props => 
+                isAuthenticated ? (
+                <Dashboard {...props} setAuth={setAuth}/>
+              ) : (
+                <Redirect to="/login" />
+              )
+            }
             />
           </Switch>
         </div>
