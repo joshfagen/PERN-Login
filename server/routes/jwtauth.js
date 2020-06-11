@@ -14,12 +14,12 @@ router.post('/register', validInfo, async (req, res) => {
             const { name, email, password } = req.body;
            
         // Check if email already exists (if so, throw error)
-            const user = await pool.query("SELECT * FROM users WHERE user_name = $1", [
-                name
+            const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [
+                email
             ]);
 
             if (user.rows.length > 0) {
-                return res.status(401).json("That username was already taken!");
+                return res.json("An account is already linked to that email!");
               } 
               
 
@@ -39,10 +39,9 @@ router.post('/register', validInfo, async (req, res) => {
         
         // Generate JWT 
             const token = jwtGenerator(newUser.rows[0].user_id);
-            res.json({ token });
+            res.json({ name, token });
         
     } catch (err) {
-        console.log(err.message);
         res.status(500).send('Server Error');
     }
 });
@@ -75,21 +74,19 @@ router.post('/login', validInfo, async (req, res) => {
         // provide token
 
         const token = jwtGenerator(user.rows[0].user_id);
-        res.json({ token });
+        const name = user.rows[0].user_name;
+        res.json({ name, token});
 
     } catch (err) {
-        console.log(err.message);
         res.status(500).send('Server Error');
     }
 });
 
-    router.get("/verified", authorization, (req, res) => {
+    router.post("/verified", authorization, (req, res) => {
         try {
             res.json(true);
 
         } catch (err) {
-            
-            console.log(err.message);
             res.status(500).send('Server Error');     
         }
     });

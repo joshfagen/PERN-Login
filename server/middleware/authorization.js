@@ -20,7 +20,6 @@ module.exports = function (req, res, next) {
 
         
     } catch (err) {
-        console.error(err.message);
         return res.status(403).json('Not authorized');   
     }
 };
