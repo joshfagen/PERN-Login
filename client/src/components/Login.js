@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { Link } from "react-router-dom";
-
+import { toast } from "react-toastify";
 const Login = ({setAuth}) => {
     
     const [inputs, setInputs] = useState({
@@ -27,7 +27,16 @@ const Login = ({setAuth}) => {
                 }
             );
                 const parseRes = await response.json();
-                console.log(parseRes);
+
+                if(parseRes.token) {
+                    localStorage.setItem('token', parseRes.token);
+                    setAuth(true);
+                    toast.success(`Welcome Back, ${parseRes.name.charAt(0).toUpperCase()}${parseRes.name.substring(1,)}!`)
+                } else {
+                    setAuth(false);
+                    toast.error(parseRes);
+                }
+              
         } catch (err) {
             console.error(err.message);
         }
@@ -40,7 +49,7 @@ const Login = ({setAuth}) => {
             <input 
                 type="email" 
                 name="email" 
-                placeholder="Enter Email"
+                placeholder="you@email.com"
                 className="form-control my-3"
                 value={email}
                 onChange={e => onChange(e)}

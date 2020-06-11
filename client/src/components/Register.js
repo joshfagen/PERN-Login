@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Register = ({ setAuth }) => {
     const [inputs, setInputs] = useState({
@@ -27,9 +28,16 @@ const Register = ({ setAuth }) => {
             });
 
             const parseResponse = await response.json();
-            localStorage.setItem('token', parseResponse.token);
             
-            setAuth(true);
+            if(parseResponse.token){
+                localStorage.setItem('token', parseResponse.token);
+            
+                setAuth(true);
+                toast.success(`Welcome to the club, ${parseResponse.name.charAt(0).toUpperCase()}${parseResponse.name.substring(1,)}!`);
+            } else {
+                setAuth(false);
+                toast.error(parseResponse);
+            }
         } catch (err) {
             console.error(err.message);
         }

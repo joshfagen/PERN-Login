@@ -1,18 +1,20 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import './App.css';
-
 import {
   BrowserRouter as Router, 
   Switch, 
   Route,
   Redirect,
  } from "react-router-dom";
-
- // components 
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+ 
+// components 
  import Dashboard from './components/Dashboard';
  import Login from './components/Login';
  import Register from './components/Register';
+
+toast.configure();
 
 function App() {
 
@@ -21,6 +23,27 @@ function App() {
   const setAuth = boolean => {
     setIsAuthenticated(boolean);
   };
+
+  async function isAuth() {
+    try {
+      const response = await fetch('http://localhost:5000/auth/verified', {
+        method: 'POST',
+        headers: { token: localStorage.token}
+      });
+      
+      const parseRes = await response.json();
+
+      console.log(parseRes);
+      parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    } 
+      catch (err) {
+      console.error(err.message); 
+    }
+  };
+
+  useEffect(() => {
+    isAuth();
+  });
 
   return (
     <Fragment>
